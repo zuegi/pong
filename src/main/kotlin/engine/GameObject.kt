@@ -1,24 +1,21 @@
+package engine
 
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import kotlin.reflect.KClass
 
 class GameObject {
-    val components = mutableListOf<Component>()
-    val transform = Transform()
+    private val components = mutableListOf<Component>()
 
-    init {
-        addComponent(transform)
-    }
+    fun update(deltaTime: Float) = components.forEach { it.update(deltaTime) }
+
+    fun render(drawScope: DrawScope) = components.forEach { it.render(drawScope) }
+
+    fun <T : Component> getComponent(type: KClass<T>) = components.firstOrNull { type.isInstance(it) } as? T
+
+    inline fun <reified T : Component> getComponent() = getComponent(T::class)
 
     fun addComponent(component: Component) {
+        component.gameObject = this
         components.add(component)
-    }
-
-    inline fun <reified T : Component> getComponent(): T? = components.filterIsInstance<T>().firstOrNull()
-
-    fun start() {
-        components.forEach { it.start() }
-    }
-
-    fun update(deltaTime: Float) {
-        components.forEach { it.update(deltaTime) }
     }
 }

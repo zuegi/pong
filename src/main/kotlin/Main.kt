@@ -10,25 +10,37 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import engine.Scene
 import game.GameConfig
+import game.GameConfig.frameTime
+import game.GameConfig.gameHeight
+import game.GameConfig.windowWidth
 import game.setupGame
 import kotlinx.coroutines.delay
+import java.awt.Dimension
 
 // Main.kt
 fun main() =
     application {
-        val frameTime = 16L // ~60 FPS
+        val screenSize: Dimension =
+            java.awt.Toolkit
+                .getDefaultToolkit()
+                .screenSize
+
+        val x = (screenSize.width - windowWidth) / 2
+        val y = (screenSize.height - gameHeight) / 2
 
         Window(
             onCloseRequest = ::exitApplication,
             title = "Pong in Kotlin",
             state =
                 rememberWindowState(
-                    width = GameConfig.windowWidth.dp,
-                    height = GameConfig.gameHeight.dp,
+                    width = windowWidth.dp,
+                    height = gameHeight.dp,
+                    position = WindowPosition(x.dp, y.dp),
                 ),
         ) {
             val state = remember { mutableStateOf(0L) }
@@ -36,7 +48,7 @@ fun main() =
 
             // Setup only once
             LaunchedEffect(Unit) {
-                setupGame(GameConfig.gameWidth, GameConfig.gameHeight, GameConfig.debugPanelWidth, textMeasurer)
+                setupGame(GameConfig.gameWidth, gameHeight, GameConfig.debugPanelWidth, textMeasurer)
                 while (true) {
                     delay(frameTime)
                     Scene.update(frameTime / 1000f)

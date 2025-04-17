@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.sp
 import engine.Component
 import engine.Scene
 import engine.Transform
+import game.GameConfig
 
 class DebugPanel(
     private val textMeasurer: TextMeasurer,
@@ -31,8 +32,11 @@ class DebugPanel(
         val debugText =
             buildAnnotatedString {
                 append("Debug Info:\n")
-                append("FPS: 60\n")
+                append("FPS: ${GameConfig.frameTime}\n")
                 append("Objects: ${Scene.gameObjects.size}")
+                Scene.gameObjects.forEach { gameObject ->
+                    append("- ${gameObject::javaClass.name}\n")
+                }
             }
 
         // Text zeichnen
