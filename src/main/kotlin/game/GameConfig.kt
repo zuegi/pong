@@ -1,6 +1,8 @@
-
+package game
 
 object GameConfig {
-    val width = 800f
-    val height = 600f
+    val gameWidth = 1000f
+    val gameHeight = 800f
+    val debugPanelWidth = 200f
+    val windowWidth = gameWidth + debugPanelWidth
 }
