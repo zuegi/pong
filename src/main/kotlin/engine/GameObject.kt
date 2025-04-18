@@ -3,7 +3,9 @@ package engine
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import kotlin.reflect.KClass
 
-class GameObject {
+class GameObject(
+    val name: String = "GameObject",
+) {
     private val components = mutableListOf<Component>()
 
     fun update(deltaTime: Float) = components.forEach { it.update(deltaTime) }
@@ -18,4 +20,6 @@ class GameObject {
         component.gameObject = this
         components.add(component)
     }
+
+    fun components() = components
 }

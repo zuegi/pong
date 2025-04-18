@@ -1,10 +1,11 @@
 package engine
 
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.graphics.drawscope.DrawScope
 
 // engine/GameLoop.kt
 object Scene {
-    val gameObjects = mutableListOf<GameObject>()
+    val gameObjects = mutableStateListOf<GameObject>()
 
     fun update(deltaTime: Float) = gameObjects.forEach { it.update(deltaTime) }
 

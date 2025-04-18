@@ -1,54 +1,47 @@
-package ui
-
-import androidx.compose.ui.geometry.Offset
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.text.TextMeasurer
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.drawText
-import androidx.compose.ui.unit.sp
-import engine.Component
+import androidx.compose.ui.unit.dp
 import engine.Scene
-import engine.Transform
-import game.GameConfig
 
-class DebugPanel(
-    private val textMeasurer: TextMeasurer,
-) : Component() {
-    override fun render(drawScope: DrawScope) {
-        val transform = gameObject.getComponent<Transform>() ?: return
-
-        // Hintergrund zeichnen
-        drawScope.drawRect(
-            color = Color.Gray,
-            topLeft = Offset(transform.x, transform.y),
-            size =
-                androidx.compose.ui.geometry
-                    .Size(transform.width, transform.height),
-        )
-
-        // Beispieltext vorbereiten
-        val debugText =
-            buildAnnotatedString {
-                append("Debug Info:\n")
-                append("FPS: ${GameConfig.frameTime}\n")
-                append("Objects: ${Scene.gameObjects.size}")
-                Scene.gameObjects.forEach { gameObject ->
-                    append("- ${gameObject::javaClass.name}\n")
-                }
-            }
-
-        // Text zeichnen
-        val textLayoutResult =
-            textMeasurer.measure(
-                text = debugText,
-                style = TextStyle(color = Color.White, fontSize = 16.sp),
-            )
-
-        drawScope.drawText(
-            textLayoutResult = textLayoutResult,
-            topLeft = Offset(transform.x + 10f, transform.y + 20f),
+@Suppress("FunctionName")
+@Composable
+fun DebugPanel(
+    x: Float,
+    y: Float,
+    width: Float,
+    height: Float,
+) {
+    Box(
+        modifier =
+            Modifier
+                .offset(x.dp, y.dp)
+                .size(width.dp, height.dp)
+                .background(Color.DarkGray), // Hintergrundfarbe explizit setzen
+    ) {
+        Text(
+            text = getDebugInfo(),
+            color = Color.White, // Textfarbe explizit setzen
+            modifier = Modifier.padding(8.dp), // Abstand vom Rand
         )
     }
+}
+
+fun getDebugInfo(): String {
+    val gameObjectsInfo =
+        Scene.gameObjects.joinToString(separator = "\n") { gameObject ->
+            "GameObject: ${gameObject.name}, Components: ${gameObject.components().size}"
+        }
+    return """
+        |Debug Info:
+        |FPS: ${1000 / game.GameConfig.frameTime} ms
+        |Objects: ${Scene.gameObjects.size}
+        |$gameObjectsInfo
+        """.trimMargin()
 }
