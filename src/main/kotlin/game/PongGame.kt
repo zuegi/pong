@@ -3,6 +3,7 @@ package game
 import engine.GameObject
 import engine.Scene
 import engine.Transform
+import ui.BallBehavior
 import utils.Key
 
 fun setupGame(
@@ -24,7 +25,8 @@ fun setupGame(
     val ball =
         GameObject("Ball").apply {
             addComponent(Transform(gameWitdth / 2, gameHeight / 2, 20f, 20f))
-            addComponent(Ball(gameWitdth, gameHeight))
+            addComponent(BallBehavior()) // BallBehavior hinzufügen
+            addComponent(Ball())
         }
 
     Scene.gameObjects.addAll(listOf(left, right, ball))
