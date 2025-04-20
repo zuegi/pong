@@ -12,8 +12,6 @@ class BallBehavior : Component() {
     var dy = 0f
     val speed = 250f
 
-    val speedLength = Math.sqrt((dx * dx + dy * dy).toDouble()).toFloat()
-
     override fun update(deltaTime: Float) {
         if (deltaTime <= 0) return // Keine Berechnungen bei ungültigem deltaTime
 

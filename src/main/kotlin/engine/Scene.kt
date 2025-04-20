@@ -1,9 +1,6 @@
 package engine
 
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.drawscope.DrawScope
 
 // engine/GameLoop.kt
 object Scene {

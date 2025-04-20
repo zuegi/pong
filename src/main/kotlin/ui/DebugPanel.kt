@@ -50,6 +50,7 @@ fun DebugPanel(
                 drawLine(
                     color = Color.Green, // Farbe der Linie
                     start = Offset(transform.x, transform.y),
+                    // FIXME der Ball verschwindet ab und zu aus dem DebugPanel: Grösse?
                     end = Offset(transform.x + ballBehavior.dx * 20f, transform.y + ballBehavior.dy * 20f),
                     strokeWidth = 4f, // Dicke der Linie
                 )
