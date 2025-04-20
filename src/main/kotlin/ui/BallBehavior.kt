@@ -1,7 +1,5 @@
 package ui
 
-import androidx.compose.ui.window.WindowPosition.PlatformDefault.x
-import androidx.compose.ui.window.WindowPosition.PlatformDefault.y
 import engine.Component
 import engine.Transform
 import game.GameConfig
@@ -13,6 +11,8 @@ class BallBehavior : Component() {
     var dx = 0f
     var dy = 0f
     val speed = 250f
+
+    val speedLength = Math.sqrt((dx * dx + dy * dy).toDouble()).toFloat()
 
     override fun update(deltaTime: Float) {
         if (deltaTime <= 0) return // Keine Berechnungen bei ungültigem deltaTime

@@ -80,5 +80,6 @@ fun GameCanvas(frameTrigger: Long) {
         y = 10f,
         width = debugPanelWidth,
         height = gameHeight,
+        frameTrigger = frameTrigger,
     )
 }
