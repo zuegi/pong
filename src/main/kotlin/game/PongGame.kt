@@ -3,9 +3,12 @@ package game
 import engine.GameObject
 import engine.Scene
 import engine.Transform
+import org.slf4j.LoggerFactory
 import ui.BallBehavior
 import ui.PaddleInput
 import utils.Key
+
+private val log = LoggerFactory.getLogger("PongGame")
 
 fun setupGame(
     gameWitdth: Float,
@@ -33,5 +36,5 @@ fun setupGame(
         }
 
     Scene.gameObjects.addAll(listOf(left, right, ball))
-    println("Game objects initialized: ${Scene.gameObjects.size}")
+    log.debug("Game objects initialized: ${Scene.gameObjects.size}")
 }

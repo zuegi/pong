@@ -19,6 +19,7 @@ import engine.Scene
 import game.GameConfig.debugPanelWidth
 import game.GameConfig.gameHeight
 import game.GameConfig.gameWidth
+import utils.logger
 
 /**
  Die GameCanvas-Klasse ist eine zentrale Komponente für die Darstellung und Interaktion des Spiels.
@@ -45,7 +46,8 @@ import game.GameConfig.gameWidth
 @Suppress("FunctionName")
 @Composable
 fun GameCanvas(frameTrigger: Long) {
-    println("GameCanvas recomposed")
+    val log = logger("GameCanvas")
+    log.debug("GameCanvas recomposed")
     val focusRequester = FocusRequester()
 
     Canvas(
@@ -66,7 +68,7 @@ fun GameCanvas(frameTrigger: Long) {
                     }
                 },
     ) {
-        println("🔄 Canvas drawing frame $frameTrigger") // zur Kontrolle
+        log.debug("🔄 Canvas drawing frame $frameTrigger") // zur Kontrolle
         Scene.render(this)
     }
 
