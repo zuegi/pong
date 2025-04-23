@@ -10,6 +10,7 @@ enum class Key(
     S(KeyEvent.VK_S),
     A(KeyEvent.VK_A),
     D(KeyEvent.VK_D),
+    X(KeyEvent.VK_X),
     DirectionUp(KeyEvent.VK_UP),
     DirectionDown(KeyEvent.VK_DOWN),
     DirectionLeft(KeyEvent.VK_LEFT),
