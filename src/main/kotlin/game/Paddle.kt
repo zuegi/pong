@@ -29,7 +29,11 @@ class Paddle(
     }
 
     override fun render(drawScope: DrawScope) {
-        val t = gameObject.getComponent<Transform>() ?: return
-        drawScope.drawRect(Color.White, Offset(t.x, t.y), Size(t.width, t.height))
+        val transform = gameObject.getComponent<Transform>() ?: return
+        drawScope.drawRect(
+            Color.White,
+            Offset(transform.x, transform.y),
+            Size(transform.width, transform.height),
+        )
     }
 }
