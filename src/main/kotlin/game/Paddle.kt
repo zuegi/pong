@@ -14,10 +14,18 @@ class Paddle(
     private val downKey: Key,
 ) : Component() {
     override fun update(deltaTime: Float) {
-        val t = gameObject.getComponent<Transform>() ?: return
+        val transform = gameObject.getComponent<Transform>() ?: return
         val speed = 300f
-        if (Keyboard.isKeyPressed(upKey)) t.y -= speed * deltaTime
-        if (Keyboard.isKeyPressed(downKey)) t.y += speed * deltaTime
+        if (Keyboard.isKeyPressed(upKey)) transform.y -= speed * deltaTime
+        if (Keyboard.isKeyPressed(downKey)) transform.y += speed * deltaTime
+
+        // Spielfeldgrenzen beachten ---
+        if (transform.y < 0) {
+            transform.y = 0f
+        }
+        if (transform.y + transform.height > GameConfig.gameHeight) {
+            transform.y = GameConfig.gameHeight - transform.height
+        }
     }
 
     override fun render(drawScope: DrawScope) {
