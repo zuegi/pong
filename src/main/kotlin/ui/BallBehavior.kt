@@ -1,6 +1,7 @@
 package ui
 
 import engine.Component
+import engine.Scene
 import engine.Transform
 import game.GameConfig
 import utils.logger
@@ -31,6 +32,18 @@ class BallBehavior : Component() {
             dy *= -1
         }
 
+        // Kollision mit Paddles prüfen
+        Scene.gameObjects.forEach { other ->
+            if (other.name.contains("Paddle")) {
+                val paddleTransform = other.getComponent<Transform>() ?: return@forEach
+                if (isColliding(transform, paddleTransform)) {
+                    dx *= -1 // Ball horizontal reflektieren
+                    // Optional: kleine Variation reinbringen:
+//                    dy += (0.1f..-0.1f)
+                }
+            }
+        }
+
         // Zurücksetzen, wenn der Ball das Spielfeld verlässt
         if (transform.x < 0 || transform.x > GameConfig.gameWidth) {
             resetBall(transform)
@@ -59,4 +72,16 @@ class BallBehavior : Component() {
         log.debug("Leertaste wurde gedrückt. Ball wird gestartet.")
         startBall()
     }
+
+    /**
+     * Prüfen, ob sich die Rechtecke von Ball und Paddle überschneiden (= AABB Kollision, Axis-Aligned Bounding Box).
+     */
+    fun isColliding(
+        a: Transform,
+        b: Transform,
+    ): Boolean =
+        a.x < b.x + b.width &&
+            a.x + a.width > b.x &&
+            a.y < b.y + b.height &&
+            a.y + a.height > b.y
 }
