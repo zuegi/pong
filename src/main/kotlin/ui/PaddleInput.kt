@@ -1,10 +1,12 @@
 package ui
 
 import engine.Component
+import engine.GameObject
 import engine.Transform
 import game.GameConfig
 import utils.Key
 import utils.Keyboard
+
 
 class PaddleInput(
     private val upKey: Key,
