@@ -1,7 +1,6 @@
 package ui
 
 import engine.Component
-import engine.Scene
 import engine.Transform
 import engine.Scene
 import game.GameConfig
@@ -17,9 +16,9 @@ class BallBehavior : Component() {
     val speed = 250f
 
     override fun update(deltaTime: Float) {
-        if (deltaTime <= 0) return // Keine Berechnungen bei ungültigem deltaTime
+        if (deltaTime <= 0) return
 
-        val transform = gameObject.getComponent<Transform>() ?: return
+        val transform = gameObject?.getComponent<Transform>() ?: return
 
         // Bewegung des Balls
         if (dx != 0f || dy != 0f) {
@@ -28,20 +27,18 @@ class BallBehavior : Component() {
             log.debug("Ball Position: x=${transform.x}, y=${transform.y}")
         }
 
-        // Reflexion oben/unten
+        // Kollision mit oberem/unterem Bildschirmrand
         if (transform.y < 0 || transform.y > GameConfig.gameHeight - transform.height) {
             dy *= -1
+            log.debug("⬆️⬇️ Ball hat obere/untere Wand getroffen – dy umgekehrt: dy=$dy")
         }
 
-        // Kollision mit Paddles prüfen
-        Scene.gameObjects.forEach { other ->
-            if (other.name.contains("Paddle")) {
-                val paddleTransform = other.getComponent<Transform>() ?: return@forEach
-                if (isColliding(transform, paddleTransform)) {
-                    dx *= -1 // Ball horizontal reflektieren
-                    // Optional: kleine Variation reinbringen:
-//                    dy += (0.1f..-0.1f)
-                }
+        // Kollision mit beiden Paddles prüfen
+        listOf("Left Paddle", "Right Paddle").forEach { paddleName ->
+            val paddle = Scene.findGameObjectByName(paddleName)
+            val paddleTransform = paddle?.getComponent<Transform>()
+            if (paddleTransform != null) {
+                checkCollision(paddleTransform)
             }
         }
 
@@ -54,18 +51,19 @@ class BallBehavior : Component() {
     private fun resetBall(transform: Transform) {
         transform.x = GameConfig.gameWidth / 2 - transform.width / 2
         transform.y = GameConfig.gameHeight / 2 - transform.height / 2
-        dx = if (dx > 0) -1f else 1f // Richtung umkehren
+        dx = if (dx > 0) -1f else 1f
         dy = 1f
+        log.debug("🔁 Ball zurückgesetzt")
     }
 
     fun startBall() {
         log.debug("Starting Ball...")
-        if (dx == 0f && dy == 0f) { // Nur starten, wenn der Ball ruht
-            dx = if ((0..1).random() == 0) 1f else -1f // Zufällige Richtung
+        if (dx == 0f && dy == 0f) {
+            dx = if ((0..1).random() == 0) 1f else -1f
             dy = if ((0..1).random() == 0) 1f else -1f
             log.debug("Ball gestartet: dx=$dx, dy=$dy")
         } else {
-            log.debug("Ball nicht gestartet: dx=$dx, dy=$dy")
+            log.debug("Ball bereits unterwegs: dx=$dx, dy=$dy")
         }
     }
 
@@ -74,15 +72,31 @@ class BallBehavior : Component() {
         startBall()
     }
 
-    /**
-     * Prüfen, ob sich die Rechtecke von Ball und Paddle überschneiden (= AABB Kollision, Axis-Aligned Bounding Box).
-     */
-    fun isColliding(
-        a: Transform,
-        b: Transform,
-    ): Boolean =
-        a.x < b.x + b.width &&
-            a.x + a.width > b.x &&
-            a.y < b.y + b.height &&
-            a.y + a.height > b.y
+    private fun checkCollision(paddleTransform: Transform) {
+        val transform = gameObject?.getComponent<Transform>() ?: return
+
+        val ballLeft = transform.x
+        val ballRight = transform.x + transform.width
+        val ballTop = transform.y
+        val ballBottom = transform.y + transform.height
+
+        val paddleLeft = paddleTransform.x
+        val paddleRight = paddleTransform.x + paddleTransform.width
+        val paddleTop = paddleTransform.y
+        val paddleBottom = paddleTransform.y + paddleTransform.height
+
+        val isColliding =
+            ballRight >= paddleLeft &&
+                    ballLeft <= paddleRight &&
+                    ballBottom >= paddleTop &&
+                    ballTop <= paddleBottom
+
+        println("Ball:   L=$ballLeft R=$ballRight T=$ballTop B=$ballBottom")
+        println("Paddle: L=$paddleLeft R=$paddleRight T=$paddleTop B=$paddleBottom")
+
+        if (isColliding) {
+            dx *= -1
+            println("🎯 Ball hat Paddle getroffen! Neue Richtung: dx=$dx, dy=$dy")
+        }
+    }
 }

@@ -1,9 +1,9 @@
 package engine
 
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import utils.logger
 
-// engine/GameLoop.kt
 object Scene {
     private val log = logger()
     val gameObjects = mutableStateListOf<GameObject>()
@@ -16,12 +16,22 @@ object Scene {
         }
     }
 
-    fun render(drawScope: androidx.compose.ui.graphics.drawscope.DrawScope) {
+    fun render(drawScope: DrawScope) {
         gameObjects.forEach { gameObject ->
             gameObject.components().forEach { component ->
                 log.debug("Rendering ${component::class.simpleName}")
                 component.render(drawScope)
             }
         }
+    }
+
+    // 🔍 HINZUGEFÜGT: GameObject per Name finden
+    fun findGameObjectByName(name: String): GameObject? {
+        return gameObjects.find { it.name == name }
+    }
+
+    // 🔧 Optional: GameObject hinzufügen
+    fun addGameObject(gameObject: GameObject) {
+        gameObjects.add(gameObject)
     }
 }
