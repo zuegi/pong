@@ -29,7 +29,7 @@ fun main() =
                 .screenSize
 
         val x = (screenSize.width - windowWidth) / 2
-        val y = (screenSize.height - gameHeight) / 2
+        val y = (screenSize.height - gameHeight) / 2ö
 
         Window(
             onCloseRequest = ::exitApplication,
